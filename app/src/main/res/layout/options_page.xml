@@ -30,10 +30,11 @@
         android:layout_width="409dp"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
+        android:onClick="InformationPage"
         android:text="Information"
         android:textColor="@android:color/black"
-        app:backgroundTint="@android:color/white"
 
+        app:backgroundTint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/button3"
         app:layout_constraintHorizontal_bias="0.5"
