@@ -22,19 +22,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.options_page);
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.SEND_SMS, Manifest.permission.READ_SMS}, PackageManager.PERMISSION_GRANTED);
+        setContentView(R.layout.options_page);ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.SEND_SMS, Manifest.permission.READ_SMS}, PackageManager.PERMISSION_GRANTED);
     }
 
     public void SendSmsPage(View view){
         Intent intent = new Intent( this, Sms.class) ;
-        startActivity(intent);
+        startActivity(intent    );
 
     }
 
     public void InformationPage(View view){
-        Intent intent = new Intent( this, Information.class) ;
-        startActivity(intent);
+        Intent     intent = new Intent( this, Information.class) ;
+        startActivity(intent   );
 
     }
 }

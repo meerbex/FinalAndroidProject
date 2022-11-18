@@ -10,23 +10,29 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
         android:text="First Aid Videos"
         android:textColor="#000000"
         android:textColorHighlight="#000000"
         android:textColorLink="#000000"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.179"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="44dp" />
+        app:layout_constraintVertical_bias="0.093" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="49dp"
-        tools:layout_editor_absoluteY="115dp"
-        tools:srcCompat="@tools:sample/avatars" />
+        android:layout_width="126dp"
+        android:layout_height="121dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        tools:srcCompat="@drawable/photo1" />
 
     <TextView
         android:id="@+id/textView5"
@@ -34,15 +40,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Basic First Aid Skills"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        tools:layout_editor_absoluteX="49dp" />
+        app:layout_constraintEnd_toEndOf="@+id/textView6"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <TextView
         android:id="@+id/textView6"
-        android:layout_width="325dp"
-        android:layout_height="75dp"
+        android:layout_width="330dp"
+        android:layout_height="126dp"
+        android:layout_marginStart="48dp"
         android:layout_marginTop="12dp"
         android:text="First aid is as easy as ABC – airway, breathing and CPR (cardiopulmonary resuscitation). In any situation, apply the DRSABCD Action Plan. DRSABCD stands for: Danger – always check the danger to you, any bystanders and then the injured or ill person."
-        app:layout_constraintTop_toBottomOf="@+id/textView5"
-        tools:layout_editor_absoluteX="49dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 </androidx.constraintlayout.widget.ConstraintLayout>
