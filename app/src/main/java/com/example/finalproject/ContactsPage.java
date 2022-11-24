@@ -2,17 +2,14 @@ package com.example.finalproject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import android.view.View;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -24,33 +21,19 @@ import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.example.finalproject.Contacts.ContactModel;
 import com.example.finalproject.Contacts.CustomAdapter;
 import com.example.finalproject.Contacts.DbHelper;
 import com.example.finalproject.ShakeServices.ReactivateService;
 import com.example.finalproject.ShakeServices.SensorService;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.view.View;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
-
-public class MainActivity extends AppCompatActivity {
+public class ContactsPage extends AppCompatActivity {
 
     private static final int IGNORE_BATTERY_OPTIMIZATION_REQUEST = 1002;
     private static final int PICK_CONTACT = 1;
@@ -64,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.contacts_page);
 
         //check for runtime permissions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -96,36 +79,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+        button1 = findViewById(R.id.Button1);
+        listView=(ListView)findViewById(R.id.ListView);
+        db=new DbHelper(this);
+        list=db.getAllContacts();
+        customAdapter=new CustomAdapter(this,list);
+        listView.setAdapter(customAdapter);
 
-
-
-
-
-    }
-
-    public void ContactsPage(View view){
-        Intent intent = new Intent( this, ContactsPage.class) ;
-        startActivity(intent    );
-
-    }
-
-
-    public void CallNumberPage(View view){
-        Intent intent = new Intent( this, CallNumber.class) ;
-        startActivity(intent    );
-
-    }
-
-    public void SendSmsPage(View view){
-        Intent intent = new Intent( this, Sms.class) ;
-        startActivity(intent    );
-
-    }
-
-    public void InformationPage(View view){
-        Intent     intent = new Intent( this, Information.class) ;
-        startActivity(intent   );
-
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // calling of getContacts()
+                if(db.count()!=5) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                    startActivityForResult(intent, PICK_CONTACT);
+                }else{
+                    Toast.makeText(ContactsPage.this, "Can't Add more than 5 Contacts", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     //method to check if the service is running
@@ -167,11 +139,11 @@ public class MainActivity extends AppCompatActivity {
         //get the contact from the PhoneBook of device
         switch (requestCode) {
             case (PICK_CONTACT):
-                if (resultCode == Activity.RESULT_OK) {
+                    if (resultCode == Activity.RESULT_OK) {
 
-                    Uri contactData = data.getData();
-                    Cursor c = managedQuery(contactData, null, null, null, null);
-                    if (c.moveToFirst()) {
+                        Uri contactData = data.getData();
+                        Cursor c = managedQuery(contactData, null, null, null, null);
+                        if (c.moveToFirst()) {
 
                         String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
                         String hasPhone = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
@@ -181,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                                 Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id,null, null);
                                 phones.moveToFirst();
                                 phone = phones.getString(phones.getColumnIndex("data1"));
-                            }
+                             }
                             String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                             db.addcontact(new ContactModel(0,name,phone));
                             list=db.getAllContacts();
@@ -190,16 +162,16 @@ public class MainActivity extends AppCompatActivity {
                         catch (Exception ex)
                         {
                         }
+                        }
                     }
-                }
-                break;
+                    break;
         }
     }
 
     //this method prompts the user to remove any battery optimisation constraints from the App
     private void askIgnoreOptimization() {
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             @SuppressLint("BatteryLife") Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
             intent.setData(Uri.parse("package:" + getPackageName()));
             startActivityForResult(intent, IGNORE_BATTERY_OPTIMIZATION_REQUEST);
@@ -207,4 +179,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-}
+    }
