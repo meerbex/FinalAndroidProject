@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.VibrationEffect;
@@ -87,7 +88,7 @@ public class SensorService extends Service {
                 //check if the user has shaked the phone for 3 time in a row
                 if(count==3) {
                   //vibrate the phone
-                    vibrate();
+//                    vibrate();
 
                     //create FusedLocationProviderClient to get the user location
                     FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
@@ -117,11 +118,12 @@ public class SensorService extends Service {
                                 List<ContactModel> list=db.getAllContacts();
                                 //send SMS to each contact
                                 for(ContactModel c: list){
-                                    String message = "Hey, "+c.getName()+"I am in DANGER, i need help. Please urgently reach me out. Here are my coordinates.\n "+"http://maps.google.com/?q=" + location.getLatitude() + "," + location.getLongitude();
+                                    String message = "I need help. "+"http://maps.google.com/?q=" + location.getLatitude() + "," + location.getLongitude();
+
                                     smsManager.sendTextMessage(c.getPhoneNo(), null, message, null, null);
                                 }
                             }else{
-                                String message= "I am in DANGER, i need help. Please urgently reach me out.\n"+"GPS was turned off.Couldn't find location. Call your nearest Police Station.";
+                                String message= "I am in DANGER, i need help. Call your nearest Police Station.";
                                 SmsManager smsManager = SmsManager.getDefault();
                                 DbHelper db=new DbHelper(SensorService.this);
                                 List<ContactModel> list=db.getAllContacts();
@@ -129,6 +131,9 @@ public class SensorService extends Service {
                                     smsManager.sendTextMessage(c.getPhoneNo(), null, message, null, null);
                                 }
                             }
+
+//                            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "102"));// Initiates the Intent
+//                            startActivity(intent);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -156,7 +161,7 @@ public class SensorService extends Service {
         final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         VibrationEffect vibEff;
         //Android Q and above have some predefined vibrating patterns
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vibEff=VibrationEffect.createPredefined(VibrationEffect.EFFECT_DOUBLE_CLICK);
             vibrator.cancel();
             vibrator.vibrate(vibEff);
