@@ -1,5 +1,9 @@
 package com.example.finalproject.ShakeServices;
 
+import static android.Manifest.permission.CALL_PHONE;
+
+import static androidx.core.app.ActivityCompat.requestPermissions;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -27,7 +31,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
+import com.example.finalproject.MainActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -42,6 +48,9 @@ import  com.example.finalproject.Contacts.DbHelper;
 import  com.example.finalproject.R;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class SensorService extends Service {
 
@@ -132,8 +141,24 @@ public class SensorService extends Service {
                                 }
                             }
 
-//                            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "102"));// Initiates the Intent
-//                            startActivity(intent);
+                            final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+                            executorService.scheduleAtFixedRate(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String number = "2023";
+
+                                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                                    callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                                    callIntent.setData(Uri.parse("tel:" +number ));
+                                    startActivity(callIntent);
+                                }
+                            }, 0, 1, TimeUnit.SECONDS);
+
+
+
+
+
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

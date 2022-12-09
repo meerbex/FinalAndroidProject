@@ -56,29 +56,6 @@ public class ContactsPage extends AppCompatActivity {
             }
         }
 
-        //this is a special permission required only by devices using
-        //Android Q and above. The Access Background Permission is responsible
-        //for populating the dialog with "ALLOW ALL THE TIME" option
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 100);
-        }
-
-        //check for BatteryOptimization,
-        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (pm != null && !pm.isIgnoringBatteryOptimizations(getPackageName())) {
-                askIgnoreOptimization();
-            }
-        }
-
-        //start the service
-        SensorService sensorService = new SensorService();
-        Intent intent = new Intent(this, sensorService.getClass());
-        if (!isMyServiceRunning(sensorService.getClass())) {
-            startService(intent);
-        }
-
-
         button1 = findViewById(R.id.Button1);
         listView=(ListView)findViewById(R.id.ListView);
         db=new DbHelper(this);
@@ -100,18 +77,6 @@ public class ContactsPage extends AppCompatActivity {
         });
     }
 
-    //method to check if the service is running
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                Log.i ("Service status", "Running");
-                return true;
-            }
-        }
-        Log.i ("Service status", "Not running");
-        return false;
-    }
 
     @Override
     protected void onDestroy() {
@@ -168,15 +133,4 @@ public class ContactsPage extends AppCompatActivity {
         }
     }
 
-    //this method prompts the user to remove any battery optimisation constraints from the App
-    private void askIgnoreOptimization() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            @SuppressLint("BatteryLife") Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, IGNORE_BATTERY_OPTIMIZATION_REQUEST);
-        }
-
-    }
-
-    }
+}

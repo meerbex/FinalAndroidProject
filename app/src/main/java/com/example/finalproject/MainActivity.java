@@ -1,5 +1,5 @@
 package com.example.finalproject;
-
+import static android.Manifest.permission.CALL_PHONE;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -57,24 +57,15 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 
 public class MainActivity extends AppCompatActivity {
-    protected LocationManager locationManager;
-    protected LocationListener locationListener;
     protected Context context;
-    String lat;
-    String provider;
-    protected String latitude, longitude;
-    protected boolean gps_enabled, network_enabled;
-
 
     private static final int IGNORE_BATTERY_OPTIMIZATION_REQUEST = 1002;
     private static final int PICK_CONTACT = 1;
 
-    //create instances of various classes to be used
-    Button button1;
-    ListView listView;
     DbHelper db;
     List<ContactModel> list;
     CustomAdapter customAdapter;
@@ -90,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS, Manifest.permission.READ_CONTACTS}, 100);
             }
         }
+
+        if (ContextCompat.checkSelfPermission(MainActivity.this, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{CALL_PHONE}, 1);
+        }
+
 
         //this is a special permission required only by devices using
         //Android Q and above. The Access Background Permission is responsible
@@ -112,10 +108,6 @@ public class MainActivity extends AppCompatActivity {
         if (!isMyServiceRunning(sensorService.getClass())) {
             startService(intent);
         }
-
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
 
     }
 
@@ -163,8 +155,18 @@ public class MainActivity extends AppCompatActivity {
                                 smsManager.sendTextMessage(c.getPhoneNo(), null, message, null, null);
                             }
                         }
-                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "102"));// Initiates the Intent
-                        startActivity(intent);
+                        
+                        String number = "2023";
+
+                        Intent callIntent = new Intent(Intent.ACTION_CALL);
+                        callIntent.setData(Uri.parse("tel:" +number ));
+
+                        if (ContextCompat.checkSelfPermission(MainActivity.this, CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                            startActivity(callIntent);
+                        } else {
+                            requestPermissions(new String[]{CALL_PHONE}, 1);
+                        }
+
 
 
                     }
@@ -176,9 +178,6 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 });
-
-        Log.d("Latitude","sdfsd");
-
     }
 
     public void ContactsPage(View view){
@@ -238,41 +237,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        //get the contact from the PhoneBook of device
-        switch (requestCode) {
-            case (PICK_CONTACT):
-                if (resultCode == Activity.RESULT_OK) {
-
-                    Uri contactData = data.getData();
-                    Cursor c = managedQuery(contactData, null, null, null, null);
-                    if (c.moveToFirst()) {
-
-                        String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-                        String hasPhone = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-                        String phone = null;
-                        try {
-                            if (hasPhone.equalsIgnoreCase("1")) {
-                                Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id,null, null);
-                                phones.moveToFirst();
-                                phone = phones.getString(phones.getColumnIndex("data1"));
-                            }
-                            String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                            db.addcontact(new ContactModel(0,name,phone));
-                            list=db.getAllContacts();
-                            customAdapter.refresh(list);
-                        }
-                        catch (Exception ex)
-                        {
-                        }
-                    }
-                }
-                break;
-        }
-    }
 
     //this method prompts the user to remove any battery optimisation constraints from the App
     private void askIgnoreOptimization() {
