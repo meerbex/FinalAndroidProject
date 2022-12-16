@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">FinalProject</string>
+
+
+
+    <string name="first_aid1"><a href="https://www.youtube.com/watch?v=ea1RJUOiNfQ" target="_blank">How to do the Primary Survey - First Aid Training - St John Ambulance</a></string>
+
+    <string name="first_aid2"><a href="https://www.youtube.com/watch?v=CKaa19kpqzM" target="_blank">7 Self-Defense Essentials to Protect Yourself</a></string>
+
+    <string name="first_aid3"><a href="https://www.youtube.com/watch?v=17NzL6kkHUY" target="_blank">10 Tips to Survive a Kidnapping According to the Police</a></string>
+
+    <string name="first_aid4"><a href="https://youtu.be/3QIfkeA6HBY" target="_blank">8 Things You Can Do To Improve Your Mental Health</a></string>
+
+
 </resources>
